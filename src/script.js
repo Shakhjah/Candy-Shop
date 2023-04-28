@@ -15,12 +15,11 @@ const products = [
   
   const productList = document.getElementById('product-list');
   const cartList = document.getElementById('cart-list');
-  
   function renderProducts() {
     products.forEach(product => {
       const div = document.createElement('div');
       div.classList.add('product');
-  
+
       const img = document.createElement('img');
       img.src = product.image;
       div.appendChild(img);
@@ -37,57 +36,75 @@ const products = [
       button.textContent = 'Добавить в корзину';
       button.addEventListener('click', () => addToCart(product.id));
       div.appendChild(button);
-      
-      
-      
       productList.appendChild(div);
     });
 }
 
 function addToCart(id) {
     const product = products.find(product => product.id === id);
-    localStorage.setItem('cart-list', product);
-    
+    localStorage[id] = JSON.stringify(product);
     cart.push(product);
     renderCart();
-  }
+  };
   
-  function renderCart() {
+   function Card() {
     if(localStorage.length > 0){
-        console.log(typeof localStorage?.['cart-list'], 'BBBBBBBBBBBB');
-        const savedValue = localStorage.getItem('cart-list');
-        const that = document.createElement('div');
-        that.innerText = savedValue;
-        const obj = JSON.parse(savedValue);
-        console.log(obj, 'VVVVVVVVVVVVVVVVV');
-        cartList.appendChild(that);
-        cartList.innerHTML = that;
-      }
-  
-    cart.forEach(product => {
-      const div = document.createElement('div');
-      div.classList.add('product');
-  
-      const img = document.createElement('img');
-      img.src = product.image;
-      div.appendChild(img);
-  
-      const title = document.createElement('h3');
-      title.textContent = product.title;
-      div.appendChild(title);
-  
-      const price = document.createElement('span');
-      price.textContent = `$${product.price}`;
-      div.appendChild(price);
-  
-      const button = document.createElement('button');
-      button.textContent = 'Убрать из корзины';
-      button.addEventListener('click', () => removeFromCart(product.id));
+        const allVal = Object.values(localStorage);
+        const newVal = allVal?.map(el => JSON.parse(el));
+        newVal.forEach(product => {
+            const div = document.createElement('div');
+            div.classList.add('product');
+        
+            const img = document.createElement('img');
+            img.src = product.image;
+            div.appendChild(img);
+        
+            const title = document.createElement('h3');
+            title.textContent = product.title;
+            div.appendChild(title);
+        
+            const price = document.createElement('span');
+            price.textContent = `$${product.price}`;
+            div.appendChild(price);
+        
+            const button = document.createElement('button');
+            button.textContent = 'Убрать из корзины';
+            button.addEventListener('click', () => removeFromCart(product.id));
+            
+            div.appendChild(button);
       
-      div.appendChild(button);
+            cartList.appendChild(div);
+          });
+   }
+
   
-      cartList.appendChild(div);
-    });
+
+    //   const del = localStorage.clear()
+  
+    // cart.forEach(product => {
+    //   const div = document.createElement('div');
+    //   div.classList.add('product');
+  
+    //   const img = document.createElement('img');
+    //   img.src = product.image;
+    //   div.appendChild(img);
+  
+    //   const title = document.createElement('h3');
+    //   title.textContent = product.title;
+    //   div.appendChild(title);
+  
+    //   const price = document.createElement('span');
+    //   price.textContent = `$${product.price}`;
+    //   div.appendChild(price);
+  
+    //   const button = document.createElement('button');
+    //   button.textContent = 'Убрать из корзины';
+    //   button.addEventListener('click', () => removeFromCart(product.id));
+      
+    //   div.appendChild(button);
+  
+    //   cartList.appendChild(div);
+    // });
   
     const checkoutButton = document.querySelector('#cart button');
     if (cart.length > 0) {
@@ -95,8 +112,35 @@ function addToCart(id) {
     } else {
       checkoutButton.setAttribute('disabled', true);
     }
-  }
+  };
   
+  function renderCart () {
+    cart.forEach(product => {
+          const div = document.createElement('div');
+          div.classList.add('product');
+      
+          const img = document.createElement('img');
+          img.src = product.image;
+          div.appendChild(img);
+      
+          const title = document.createElement('h3');
+          title.textContent = product.title;
+          div.appendChild(title);
+      
+          const price = document.createElement('span');
+          price.textContent = `$${product.price}`;
+          div.appendChild(price);
+      
+        //   const button = document.createElement('button');
+        //   button.textContent = 'Убрать из корзины';
+        //   button.addEventListener('click', () => removeFromCart(product.id));
+          
+        //   div.appendChild(button);
+      
+          cartList.appendChild(div);
+        });
+      }; 
+
   function removeFromCart(id) {
     const index = cart.findIndex(product => product.id === id);
     cart.splice(index, 1);
@@ -122,5 +166,15 @@ function addToCart(id) {
 //   localStorage.setItem('my-value', newValue);
 // });
   
+const del = document.querySelector('.del');
+del.addEventListener('click', () => {
+    localStorage.clear()
+    cart.length = 0;
+    location.reload()
+})
+
+
+
   renderProducts();
+Card();
   renderCart();
